@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Lab1" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here for Pastry Shop. -->
+        <item name="colorPrimary">@color/md_theme_primary_pastry</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary_pastry</item>
+        <item name="colorPrimaryContainer">@color/md_theme_primaryContainer_pastry</item> <!-- Можно выбрать более темный контейнер для лучшего контраста, если стандартный слишком светлый для темной темы -->
+        <item name="colorOnPrimaryContainer">@color/md_theme_onPrimaryContainer_pastry</item>
+        <item name="colorSecondary">@color/md_theme_secondary_pastry</item>
+        <item name="colorOnSecondary">@color/md_theme_onSecondary_pastry</item>
+        <item name="colorSecondaryContainer">@color/md_theme_secondaryContainer_pastry</item> <!-- Аналогично, можно затемнить -->
+        <item name="colorOnSecondaryContainer">@color/md_theme_onSecondaryContainer_pastry</item>
+        <item name="colorTertiary">@color/md_theme_tertiary_pastry</item>
+        <item name="colorOnTertiary">@color/md_theme_onTertiary_pastry</item>
+        <item name="colorError">@color/md_theme_error_pastry</item>
+        <item name="colorOnError">@color/md_theme_onError_pastry</item>
+        <item name="android:colorBackground">@color/md_theme_background_pastry_dark</item>
+        <item name="colorOnBackground">@color/md_theme_onBackground_pastry_dark</item>
+        <item name="colorSurface">@color/md_theme_surface_pastry_dark</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface_pastry_dark</item>
+        <!-- Вы можете также настроить colorSurfaceVariant, colorOutline и т.д. для темной темы -->
+    </style>
+</resources>

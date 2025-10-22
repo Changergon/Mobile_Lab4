@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.example.lab4.HomeItem" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/md_theme_surface_pastry">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/itemImage"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars"
+                android:contentDescription="Item image" />
+
+            <TextView
+                android:id="@+id/itemTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:text="Название десерта"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="@color/md_theme_onSurface_pastry"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toEndOf="@id/itemImage"
+                app:layout_constraintEnd_toStartOf="@id/itemTime"
+                app:layout_constraintTop_toTopOf="@id/itemImage"/>
+
+            <TextView
+                android:id="@+id/itemSubtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:text="Краткое описание или категория"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="@color/md_theme_onSurface_pastry"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@id/itemTitle"
+                app:layout_constraintStart_toStartOf="@id/itemTitle"
+                app:layout_constraintEnd_toEndOf="@id/itemTitle"/>
+
+            <TextView
+                android:id="@+id/itemTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="10:30"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="@color/md_theme_secondary_pastry"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/itemTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

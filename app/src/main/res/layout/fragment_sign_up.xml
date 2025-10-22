@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <!-- Можно добавить переменные, если они нужны -->
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:background="@color/md_theme_background_pastry"
+        tools:context=".SignUpFragment">
+
+        <TextView
+            android:id="@+id/signUpTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Регистрация"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/md_theme_onBackground_pastry"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="40dp"/>
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Имя / Логин"
+            android:inputType="textPersonName"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/md_theme_primary_pastry" 
+            android:textColorHint="@color/md_theme_onSurface_pastry" 
+            android:textColor="@color/md_theme_onBackground_pastry"
+            app:layout_constraintTop_toBottomOf="@+id/signUpTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Электронная почта"
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/md_theme_primary_pastry" 
+            android:textColorHint="@color/md_theme_onSurface_pastry" 
+            android:textColor="@color/md_theme_onBackground_pastry"
+            app:layout_constraintTop_toBottomOf="@+id/nameEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Пароль"
+            android:inputType="textPassword"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/md_theme_primary_pastry" 
+            android:textColorHint="@color/md_theme_onSurface_pastry" 
+            android:textColor="@color/md_theme_onBackground_pastry"
+            app:layout_constraintTop_toBottomOf="@+id/emailEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/ageEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Возраст"
+            android:inputType="number"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/md_theme_primary_pastry"
+            android:textColorHint="@color/md_theme_onSurface_pastry"
+            android:textColor="@color/md_theme_onBackground_pastry"
+            app:layout_constraintTop_toBottomOf="@+id/passwordEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/genderTextViewLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Пол:"
+            android:textSize="16sp"
+            android:textColor="@color/md_theme_onBackground_pastry"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/ageEditText"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <RadioGroup
+            android:id="@+id/genderRadioGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/genderTextViewLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <RadioButton
+                android:id="@+id/maleRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Мужской"
+                android:textColor="@color/md_theme_onBackground_pastry"/>
+
+            <RadioButton
+                android:id="@+id/femaleRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Женский"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/md_theme_onBackground_pastry"/>
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/signUpButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Зарегистрироваться"
+            android:backgroundTint="@color/pastry_button_background_tint"
+            android:textColor="@color/pastry_button_text_color"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/signInText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Уже есть аккаунт? Войти"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/pastry_link_text_color"
+            app:layout_constraintTop_toBottomOf="@+id/signUpButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
