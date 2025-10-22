@@ -35,14 +35,13 @@ class SignUpFragment : Fragment() {
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString()
             
-            val user = User(name, email, password) // Age and gender are not part of the User object, so they are omitted.
+            val user = User(name, email, password)
 
             val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(user)
             findNavController().navigate(action)
         }
 
         binding.signInText.setOnClickListener {
-            // When just clicking the text, we navigate without sending a user
             val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(null)
             findNavController().navigate(action)
         }

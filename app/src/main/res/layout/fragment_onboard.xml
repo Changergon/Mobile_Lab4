@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!-- Можно добавить переменные, если они нужны -->
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +14,6 @@
         android:background="@color/md_theme_background_pastry" 
         tools:context=".OnboardFragment">
 
-        <!-- ImageView для тематического изображения -->
         <ImageView
             android:id="@+id/onboardImage"
             android:layout_width="0dp"
