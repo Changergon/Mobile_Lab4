@@ -31,12 +31,20 @@ class SignUpFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // For now, just navigate back to SignInFragment on successful sign up
-            findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+            val name = binding.nameEditText.text.toString().trim()
+            val email = binding.emailEditText.text.toString().trim()
+            val password = binding.passwordEditText.text.toString()
+            
+            val user = User(name, email, password) // Age and gender are not part of the User object, so they are omitted.
+
+            val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(user)
+            findNavController().navigate(action)
         }
 
         binding.signInText.setOnClickListener {
-            findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+            // When just clicking the text, we navigate without sending a user
+            val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(null)
+            findNavController().navigate(action)
         }
     }
     

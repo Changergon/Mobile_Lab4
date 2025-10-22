@@ -10,6 +10,7 @@
         android:name="com.example.lab4.OnboardFragment"
         android:label="fragment_onboard"
         tools:layout="@layout/fragment_onboard">
+        <!-- Обычный переход, чтобы можно было вернуться назад -->
         <action
             android:id="@+id/action_onboardFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
@@ -20,12 +21,19 @@
         android:name="com.example.lab4.SignInFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in">
+        <!-- Обычный переход на регистрацию -->
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <!-- Обычный переход на главный экран -->
         <action
             android:id="@+id/action_signInFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <argument
+            android:name="user"
+            app:argType="com.example.lab4.User"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 
     <fragment
@@ -33,9 +41,12 @@
         android:name="com.example.lab4.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up">
+        <!-- Этот переход разрывает цикл, очищая стек до Onboard и добавляя новый SignIn -->
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
-            app:destination="@id/signInFragment" />
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/signInFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
