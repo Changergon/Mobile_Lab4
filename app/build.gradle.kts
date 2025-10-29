@@ -51,10 +51,10 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     
-    // ЗАВИСИМОСТЬ ДЛЯ ФРАГМЕНТОВ KTX
+
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
-    // Navigation Component
+
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 

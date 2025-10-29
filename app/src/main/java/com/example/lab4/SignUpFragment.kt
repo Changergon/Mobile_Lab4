@@ -13,69 +13,74 @@ import com.example.lab4.databinding.FragmentSignUpBinding
 class SignUpFragment : Fragment() {
 
     private var _binding: FragmentSignUpBinding? = null
-    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
-        return binding.root
+        return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.signUpButton.setOnClickListener {
-            if (!validateInput()) {
-                return@setOnClickListener
+        _binding?.let { binding ->
+            binding.signUpButton.setOnClickListener {
+                if (!validateInput()) {
+                    return@setOnClickListener
+                }
+
+                val name = binding.nameEditText.text.toString().trim()
+                val email = binding.emailEditText.text.toString().trim()
+                val password = binding.passwordEditText.text.toString()
+
+                val user = User(name, email, password)
+
+                val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(user)
+                findNavController().navigate(action)
             }
 
+            binding.signInText.setOnClickListener {
+
+                val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(null)
+                findNavController().navigate(action)
+            }
+        }
+    }
+
+    private fun validateInput(): Boolean {
+        _binding?.let { binding ->
             val name = binding.nameEditText.text.toString().trim()
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString()
-            
-            val user = User(name, email, password)
+            val ageString = binding.ageEditText.text.toString().trim()
+            val selectedGenderId = binding.genderRadioGroup.checkedRadioButtonId
 
-            val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(user)
-            findNavController().navigate(action)
+            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || ageString.isEmpty()) {
+                Toast.makeText(requireContext(), "Все поля, включая возраст, должны быть заполнены", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (selectedGenderId == -1) {
+                Toast.makeText(requireContext(), "Пожалуйста, выберите пол", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            val age = ageString.toIntOrNull()
+            if (age == null || age <= 0) {
+                Toast.makeText(requireContext(), "Пожалуйста, введите корректный возраст", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(requireContext(), "Неверный формат электронной почты", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (password.length < 6) {
+                Toast.makeText(requireContext(), "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            return true
         }
-
-        binding.signInText.setOnClickListener {
-            val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(null)
-            findNavController().navigate(action)
-        }
-    }
-    
-    private fun validateInput(): Boolean {
-        val name = binding.nameEditText.text.toString().trim()
-        val email = binding.emailEditText.text.toString().trim()
-        val password = binding.passwordEditText.text.toString()
-        val ageString = binding.ageEditText.text.toString().trim()
-        val selectedGenderId = binding.genderRadioGroup.checkedRadioButtonId
-
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || ageString.isEmpty()) {
-            Toast.makeText(requireContext(), "Все поля, включая возраст, должны быть заполнены", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (selectedGenderId == -1) {
-            Toast.makeText(requireContext(), "Пожалуйста, выберите пол", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        val age = ageString.toIntOrNull()
-        if (age == null || age <= 0) {
-            Toast.makeText(requireContext(), "Пожалуйста, введите корректный возраст", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            Toast.makeText(requireContext(), "Неверный формат электронной почты", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (password.length < 6){
-            Toast.makeText(requireContext(), "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+        return false
     }
 
     override fun onDestroyView() {
