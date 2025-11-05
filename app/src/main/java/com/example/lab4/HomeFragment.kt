@@ -22,14 +22,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        // В этом месте !! является безопасным, т.к. мы только что создали _binding
         return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Используем безопасный вызов, чтобы избежать !!
         _binding?.let { binding ->
             (activity as? AppCompatActivity)?.setSupportActionBar(binding.topAppBar)
             binding.topAppBar.title = "Welcome, ${args.user.name}"
