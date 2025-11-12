@@ -21,13 +21,15 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        val binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = binding
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Используем безопасный вызов, чтобы избежать !!
         _binding?.let { binding ->
             (activity as? AppCompatActivity)?.setSupportActionBar(binding.topAppBar)
             binding.topAppBar.title = "Welcome, ${args.user.name}"

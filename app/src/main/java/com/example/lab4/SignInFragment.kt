@@ -21,8 +21,9 @@ class SignInFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSignInBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        val binding = FragmentSignInBinding.inflate(inflater, container, false)
+        _binding = binding
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,6 +50,7 @@ class SignInFragment : Fragment() {
                     val action = SignInFragmentDirections.actionSignInFragmentToHomeFragment(userToLogin)
                     findNavController().navigate(action)
                 } else {
+                    // If there is no registered user, or the details are incorrect, we create a new user object for the home screen.
                     val action = SignInFragmentDirections.actionSignInFragmentToHomeFragment(User(email, email, password))
                     findNavController().navigate(action)
                 }

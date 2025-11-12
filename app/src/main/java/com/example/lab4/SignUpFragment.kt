@@ -18,8 +18,9 @@ class SignUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        val binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        _binding = binding
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,14 +36,14 @@ class SignUpFragment : Fragment() {
                 val email = binding.emailEditText.text.toString().trim()
                 val password = binding.passwordEditText.text.toString()
 
-                val user = User(name, email, password)
+                val user = User(name, email, password) // Age and gender are not part of the User object, so they are omitted.
 
                 val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(user)
                 findNavController().navigate(action)
             }
 
             binding.signInText.setOnClickListener {
-
+                // When just clicking the text, we navigate without sending a user
                 val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(null)
                 findNavController().navigate(action)
             }
@@ -50,6 +51,9 @@ class SignUpFragment : Fragment() {
     }
 
     private fun validateInput(): Boolean {
+        // Since this is a private function and is only called from onViewCreated (within a let block), 
+        // it is safe to use the !! operator here. However, for consistency and absolute safety, 
+        // we can also use a safe call here.
         _binding?.let { binding ->
             val name = binding.nameEditText.text.toString().trim()
             val email = binding.emailEditText.text.toString().trim()
@@ -80,6 +84,7 @@ class SignUpFragment : Fragment() {
             }
             return true
         }
+        // If _binding is null for some reason, we can't validate, so we return false.
         return false
     }
 
