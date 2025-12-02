@@ -55,6 +55,15 @@
         <argument
             android:name="user"
             app:argType="com.example.lab4.User" />
+        <action
+            android:id="@+id/action_homeFragment_to_charactersFragment"
+            app:destination="@id/charactersFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/charactersFragment"
+        android:name="com.example.lab4.characters.CharactersFragment"
+        android:label="fragment_characters"
+        tools:layout="@layout/fragment_characters" />
 
 </navigation>
