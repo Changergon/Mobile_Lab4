@@ -1,0 +1,78 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".SettingsFragment">
+
+        <EditText
+            android:id="@+id/username_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Никнейм пользователя" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/notifications_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Уведомления" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Тема оформления" />
+
+        <RadioGroup
+            android:id="@+id/theme_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/light_theme_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Светлая" />
+
+            <RadioButton
+                android:id="@+id/dark_theme_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Темная" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/backup_filename_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Имя файла резервной копии" />
+
+        <Button
+            android:id="@+id/create_backup_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Создать резервную копию" />
+
+        <Button
+            android:id="@+id/delete_backup_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Удалить резервную копию" />
+
+        <Button
+            android:id="@+id/restore_backup_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Восстановить из резервной копии" />
+
+        <TextView
+            android:id="@+id/backup_info_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            tools:text="Информация о резервной копии" />
+
+    </LinearLayout>
+</layout>

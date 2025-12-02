@@ -26,10 +26,26 @@
     <color name="md_theme_onError_pastry">#FFFFFF</color>
 
     <!-- Pastry Shop Theme Colors - Dark -->
+    <color name="md_theme_primary_pastry_dark">#BCAAA4</color>
+    <color name="md_theme_onPrimary_pastry_dark">#4E342E</color>
+    <color name="md_theme_primaryContainer_pastry_dark">#6D4C41</color>
+    <color name="md_theme_onPrimaryContainer_pastry_dark">#EFEBE9</color>
+
+    <color name="md_theme_secondary_pastry_dark">#F48FB1</color>
+    <color name="md_theme_onSecondary_pastry_dark">#880E4F</color>
+    <color name="md_theme_secondaryContainer_pastry_dark">#C2185B</color>
+    <color name="md_theme_onSecondaryContainer_pastry_dark">#FCE4EC</color>
+
+    <color name="md_theme_tertiary_pastry_dark">#FFD54F</color>
+    <color name="md_theme_onTertiary_pastry_dark">#000000</color>
+
     <color name="md_theme_background_pastry_dark">#2C1D17</color>
     <color name="md_theme_onBackground_pastry_dark">#EFEBE9</color>
     <color name="md_theme_surface_pastry_dark">#3E2723</color>
     <color name="md_theme_onSurface_pastry_dark">#EFEBE9</color>
+
+    <color name="md_theme_error_pastry_dark">#FFB4AB</color>
+    <color name="md_theme_onError_pastry_dark">#690005</color>
 
     <!-- Specific UI element colors (can be derived or new) -->
     <color name="pastry_button_text_color">@color/md_theme_onPrimary_pastry</color>

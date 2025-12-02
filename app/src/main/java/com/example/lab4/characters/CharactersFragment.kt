@@ -18,7 +18,7 @@ class CharactersFragment : Fragment() {
     private var _binding: FragmentCharactersBinding? = null
 
     private lateinit var characterAdapter: CharacterAdapter
-    private val characterRepository = CharacterRepository()
+    // УДАЛЕНО: private val characterRepository = CharacterRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +53,8 @@ class CharactersFragment : Fragment() {
             val pageSize = 50
 
             viewLifecycleOwner.lifecycleScope.launch {
-                val characters = characterRepository.getCharacters(page, pageSize)
+                // ИЗМЕНЕНО: Обращаемся к Singleton'у напрямую
+                val characters = CharacterRepository.getCharacters(page, pageSize)
                 characterAdapter = CharacterAdapter(characters)
                 binding.recyclerView.adapter = characterAdapter
             }

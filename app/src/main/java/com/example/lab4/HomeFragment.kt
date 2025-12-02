@@ -2,6 +2,9 @@ package com.example.lab4
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +20,11 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeAdapter: HomeAdapter
     private val args: HomeFragmentArgs by navArgs()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +48,21 @@ class HomeFragment : Fragment() {
             binding.charactersButton.setOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_charactersFragment)
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.home_top_app_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.settings -> {
+                findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

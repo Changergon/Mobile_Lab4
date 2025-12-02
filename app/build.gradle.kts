@@ -72,4 +72,5 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.cardview)
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
