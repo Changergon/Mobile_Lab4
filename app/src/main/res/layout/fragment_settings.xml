@@ -1,78 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp"
-        tools:context=".SettingsFragment">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/username_edit_text"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Никнейм пользователя" />
+            android:padding="16dp"
+            tools:context=".SettingsFragment">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/notifications_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Уведомления" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nicknameInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Тема оформления" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nicknameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Никнейм пользователя" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <RadioGroup
-            android:id="@+id/theme_radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/nicknameInputLayout" />
 
-            <RadioButton
-                android:id="@+id/light_theme_radio_button"
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/notificationsSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Включить уведомления"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/themeSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Темная тема"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/notificationsSwitch" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/themeSwitch" />
+
+            <TextView
+                android:id="@+id/backupTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Светлая" />
+                android:layout_marginTop="16dp"
+                android:text="Резервное копирование"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider2" />
 
-            <RadioButton
-                android:id="@+id/dark_theme_radio_button"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/backupFileNameInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/backupTitleTextView">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/backupFileNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Имя файла резервной копии" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/backupInfoTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Информация о резервной копии"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/backupFileNameInputLayout" />
+
+            <Button
+                android:id="@+id/createBackupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Темная" />
-        </RadioGroup>
+                android:layout_marginTop="8dp"
+                android:text="Создать"
+                app:layout_constraintEnd_toStartOf="@id/deleteBackupButton"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/backupInfoTextView" />
 
-        <EditText
-            android:id="@+id/backup_filename_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Имя файла резервной копии" />
+            <Button
+                android:id="@+id/deleteBackupButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Удалить"
+                app:layout_constraintEnd_toStartOf="@id/restoreBackupButton"
+                app:layout_constraintStart_toEndOf="@id/createBackupButton"
+                app:layout_constraintTop_toTopOf="@id/createBackupButton" />
 
-        <Button
-            android:id="@+id/create_backup_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Создать резервную копию" />
+            <Button
+                android:id="@+id/restoreBackupButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Восстановить"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/deleteBackupButton"
+                app:layout_constraintTop_toTopOf="@id/deleteBackupButton" />
 
-        <Button
-            android:id="@+id/delete_backup_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Удалить резервную копию" />
-
-        <Button
-            android:id="@+id/restore_backup_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Восстановить из резервной копии" />
-
-        <TextView
-            android:id="@+id/backup_info_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            tools:text="Информация о резервной копии" />
-
-    </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

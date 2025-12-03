@@ -1,5 +1,6 @@
 package com.example.lab4.characters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lab4.databinding.ItemCharacterBinding
 import com.example.lab4.characters.model.Character
 
-class CharacterAdapter(private val characters: List<Character>) : RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
+class CharacterAdapter(private var characters: List<Character>) : RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val binding = ItemCharacterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -19,6 +20,12 @@ class CharacterAdapter(private val characters: List<Character>) : RecyclerView.A
     }
 
     override fun getItemCount() = characters.size
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(newCharacters: List<Character>) {
+        characters = newCharacters
+        notifyDataSetChanged() // Обновляем весь список. Для простоты.
+    }
 
     class CharacterViewHolder(private val binding: ItemCharacterBinding) : RecyclerView.ViewHolder(binding.root) {
 

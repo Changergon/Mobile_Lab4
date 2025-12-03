@@ -3,4 +3,6 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     id("androidx.navigation.safeargs.kotlin") version "2.7.7" apply false
+    // ОБНОВЛЕНО: Используем alias для KSP, чтобы версия управлялась из libs.versions.toml
+    alias(libs.plugins.google.devtools.ksp) apply false
 }

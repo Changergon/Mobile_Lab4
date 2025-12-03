@@ -1,77 +1,84 @@
 package com.example.lab4.characters
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lab4.characters.model.AppDatabase
 import com.example.lab4.databinding.FragmentCharactersBinding
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class CharactersFragment : Fragment() {
 
     private var _binding: FragmentCharactersBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var characterAdapter: CharacterAdapter
-    // УДАЛЕНО: private val characterRepository = CharacterRepository()
+
+    // 1. Создаем ViewModel с помощью кастомной фабрики
+    private val viewModel: CharactersViewModel by viewModels {
+        val database = AppDatabase.getDatabase(requireContext())
+        val repository = CharacterRepository(database.characterDao())
+        CharactersViewModelFactory(repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentCharactersBinding.inflate(inflater, container, false)
-        _binding = binding
+        _binding = FragmentCharactersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding?.let { binding ->
-            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        setupRecyclerView()
+        setupListeners()
+        observeViewModel()
+    }
 
-            if (isNetworkAvailable()) {
-                binding.errorMessage.visibility = View.GONE
-                binding.recyclerView.visibility = View.VISIBLE
-                loadCharacters()
-            } else {
-                binding.errorMessage.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.GONE
-            }
+    private fun setupRecyclerView() {
+        characterAdapter = CharacterAdapter(emptyList())
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = characterAdapter
+    }
+
+    private fun setupListeners() {
+        // 2. Логика для "Обновить" (свайп вниз)
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refreshCharacters(11) // Обновляем текущую (или дефолтную) страницу
+            binding.swipeRefreshLayout.isRefreshing = false // Убираем иконку загрузки
+        }
+
+        // 3. Логика для "Загрузить еще"
+        binding.loadMoreButton.setOnClickListener {
+            viewModel.refreshCharacters(12) // Загружаем следующую страницу
         }
     }
 
-    private fun loadCharacters() {
-        _binding?.let { binding ->
-            val page = 11
-            val pageSize = 50
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                // ИЗМЕНЕНО: Обращаемся к Singleton'у напрямую
-                val characters = CharacterRepository.getCharacters(page, pageSize)
-                characterAdapter = CharacterAdapter(characters)
-                binding.recyclerView.adapter = characterAdapter
+    private fun observeViewModel() {
+        // 4. Подписываемся на Flow из ViewModel
+        viewModel.characters
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach { characters ->
+                if (characters.isNotEmpty()) {
+                    binding.errorMessage.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
+                    characterAdapter.updateData(characters)
+                } else {
+                    binding.errorMessage.visibility = View.VISIBLE
+                    binding.recyclerView.visibility = View.GONE
+                }
             }
-        }
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager =
-            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork ?: return false
-        val activeNetwork =
-            connectivityManager.getNetworkCapabilities(network) ?: return false
-        return when {
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            else -> false
-        }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     override fun onDestroyView() {

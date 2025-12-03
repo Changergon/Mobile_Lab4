@@ -1,12 +1,14 @@
 package com.example.lab4.characters.model
 
-import kotlinx.serialization.InternalSerializationApi
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
-@OptIn(InternalSerializationApi::class)
 @Serializable
+@Entity(tableName = "characters")
 data class Character(
-    val name: String = "N/A",
+    @PrimaryKey
+    val name: String,
     val culture: String = "N/A",
     val born: String = "N/A",
     val titles: List<String> = emptyList(),

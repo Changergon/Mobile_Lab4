@@ -9,14 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.lab4.characters.CharacterRepository
+import com.example.lab4.characters.model.AppDatabase
 import com.example.lab4.characters.model.Character
 import com.example.lab4.databinding.FragmentSettingsBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File
-import androidx.core.content.edit
 
 class SettingsFragment : Fragment() {
 
@@ -47,65 +49,97 @@ class SettingsFragment : Fragment() {
     }
 
     private fun loadSettings() {
-        // SharedPreferences
-        binding.usernameEditText.setText(sharedPreferences.getString("username", ""))
-        binding.notificationsSwitch.isChecked = sharedPreferences.getBoolean("notifications", true)
-        binding.backupFilenameEditText.setText(sharedPreferences.getString("backup_filename", "backup"))
-
-        // DataStore
-        lifecycleScope.launch {
-            settingsDataStoreManager.theme.collect {
-                if (it == "dark") {
-                    binding.darkThemeRadioButton.isChecked = true
-                } else {
-                    binding.lightThemeRadioButton.isChecked = true
+        lifecycleScope.launchWhenStarted {
+            // Загрузка всех настроек из DataStore
+            launch {
+                settingsDataStoreManager.nickname.collect { binding.nicknameEditText.setText(it) }
+            }
+            launch {
+                settingsDataStoreManager.notifications.collect { binding.notificationsSwitch.isChecked = it }
+            }
+            launch {
+                settingsDataStoreManager.theme.collect { theme ->
+                    if (theme == "dark") {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        binding.themeSwitch.isChecked = true
+                    } else {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        binding.themeSwitch.isChecked = false
+                    }
                 }
             }
         }
+
+        // Загрузка имени файла из SharedPreferences
+        val backupFilename = sharedPreferences.getString("backup_filename", "backup")
+        binding.backupFileNameEditText.setText(backupFilename)
     }
 
     private fun setupListeners() {
-        binding.usernameEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                sharedPreferences.edit {
-                    putString(
-                        "username",
-                        binding.usernameEditText.text.toString()
-                    )
-                }
+        // Automatic saving on change
+        binding.nicknameEditText.doAfterTextChanged { text ->
+            lifecycleScope.launch {
+                settingsDataStoreManager.setNickname(text.toString())
             }
         }
 
         binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit { putBoolean("notifications", isChecked) }
-        }
-
-        binding.themeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val theme = if (checkedId == R.id.dark_theme_radio_button) "dark" else "light"
-            if (theme == "dark") {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
             lifecycleScope.launch {
-                settingsDataStoreManager.setTheme(theme)
+                settingsDataStoreManager.setNotifications(isChecked)
             }
+            Toast.makeText(requireContext(), "Настройки уведомлений сохранены", Toast.LENGTH_SHORT).show()
         }
 
-        binding.backupFilenameEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                sharedPreferences.edit {
-                    putString(
-                        "backup_filename",
-                        binding.backupFilenameEditText.text.toString()
-                    )
+        binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            lifecycleScope.launch {
+                val theme = if (isChecked) "dark" else "light"
+                settingsDataStoreManager.setTheme(theme)
+                if (isChecked) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }
+            Toast.makeText(requireContext(), "Тема изменена", Toast.LENGTH_SHORT).show()
         }
 
-        binding.createBackupButton.setOnClickListener { createBackup() }
+        binding.backupFileNameEditText.doAfterTextChanged { text ->
+            val newName = text.toString()
+            if (newName.isNotBlank()) {
+                sharedPreferences.edit().putString("backup_filename", newName).apply()
+            }
+        }
+
+        // Backup buttons
+        binding.createBackupButton.setOnClickListener {
+            lifecycleScope.launch {
+                createBackup()
+            }
+        }
         binding.deleteBackupButton.setOnClickListener { deleteBackup() }
         binding.restoreBackupButton.setOnClickListener { restoreBackup() }
+    }
+
+    private suspend fun createBackup() {
+        val dao = AppDatabase.getDatabase(requireContext()).characterDao()
+        val dataToBackup = dao.getAll().first()
+
+        if (dataToBackup.isEmpty()) {
+            Toast.makeText(requireContext(), "Нет данных для сохранения. Сначала откройте список персонажей", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val serializedData = serializeData(dataToBackup)
+
+        try {
+            val backupFile = getBackupFile()
+            backupFile.writeText(serializedData)
+            Toast.makeText(requireContext(), "Резервная копия создана", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Ошибка создания резервной копии: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+
+        updateBackupInfo()
     }
 
     private fun getBackupFile(): File {
@@ -128,28 +162,6 @@ class SettingsFragment : Fragment() {
             binding.deleteBackupButton.isEnabled = false
             binding.restoreBackupButton.isEnabled = internalBackupFile.exists()
         }
-    }
-
-    private fun createBackup() {
-        // ИЗМЕНЕНО: Берем данные напрямую из кэша репозитория
-        val dataToBackup = CharacterRepository.cachedCharacters
-
-        if (dataToBackup.isEmpty()) {
-            Toast.makeText(requireContext(), "Нет данных для сохранения. Сначала откройте список персонажей", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        val serializedData = serializeData(dataToBackup)
-
-        try {
-            val backupFile = getBackupFile()
-            backupFile.writeText(serializedData)
-            Toast.makeText(requireContext(), "Резервная копия создана", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Ошибка создания резервной копии: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-
-        updateBackupInfo()
     }
 
     private fun deleteBackup() {
@@ -185,11 +197,11 @@ class SettingsFragment : Fragment() {
     private fun serializeData(data: List<Character>): String {
         return data.joinToString(separator = "\n\n====================\n\n") {
             "Имя: ${it.name}\n" +
-            "Культура: ${it.culture}\n" +
-            "Родился: ${it.born}\n" +
-            "Титулы: ${it.titles.joinToString()}\n" +
-            "Псевдонимы: ${it.aliases.joinToString()}\n" +
-            "Актёры: ${it.playedBy.joinToString()}"
+                "Культура: ${it.culture}\n" +
+                "Родился: ${it.born}\n" +
+                "Титулы: ${it.titles.joinToString()}\n" +
+                "Псевдонимы: ${it.aliases.joinToString()}\n" +
+                "Актёры: ${it.playedBy.joinToString()}"
         }
     }
 
