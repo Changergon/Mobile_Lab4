@@ -23,7 +23,6 @@ import java.io.File
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var settingsDataStoreManager: SettingsDataStoreManager
     private lateinit var sharedPreferences: SharedPreferences
@@ -33,7 +32,8 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        val binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        _binding = binding
         return binding.root
     }
 
@@ -43,28 +43,38 @@ class SettingsFragment : Fragment() {
         settingsDataStoreManager = SettingsDataStoreManager(requireContext())
         sharedPreferences = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
 
-        loadSettings()
-        setupListeners()
-        updateBackupInfo()
+        _binding?.let { binding ->
+            loadSettings(binding)
+            setupListeners(binding)
+            updateBackupInfo(binding)
+        }
     }
 
-    private fun loadSettings() {
+    private fun loadSettings(binding: FragmentSettingsBinding) {
         lifecycleScope.launchWhenStarted {
             // Загрузка всех настроек из DataStore
             launch {
-                settingsDataStoreManager.nickname.collect { binding.nicknameEditText.setText(it) }
+                settingsDataStoreManager.nickname.collect { nickname ->
+                    // Проверяем, чтобы не обновлять текст, если он уже совпадает
+                    // Это предотвращает перескакивание курсора
+                    if (binding.nicknameEditText.text.toString() != nickname) {
+                        binding.nicknameEditText.setText(nickname)
+                    }
+                }
             }
             launch {
                 settingsDataStoreManager.notifications.collect { binding.notificationsSwitch.isChecked = it }
             }
             launch {
                 settingsDataStoreManager.theme.collect { theme ->
-                    if (theme == "dark") {
+                    val isDarkTheme = theme == "dark"
+                    if (isDarkTheme) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        binding.themeSwitch.isChecked = true
                     } else {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        binding.themeSwitch.isChecked = false
+                    }
+                    if (binding.themeSwitch.isChecked != isDarkTheme) {
+                        binding.themeSwitch.isChecked = isDarkTheme
                     }
                 }
             }
@@ -75,7 +85,7 @@ class SettingsFragment : Fragment() {
         binding.backupFileNameEditText.setText(backupFilename)
     }
 
-    private fun setupListeners() {
+    private fun setupListeners(binding: FragmentSettingsBinding) {
         // Automatic saving on change
         binding.nicknameEditText.doAfterTextChanged { text ->
             lifecycleScope.launch {
@@ -113,14 +123,14 @@ class SettingsFragment : Fragment() {
         // Backup buttons
         binding.createBackupButton.setOnClickListener {
             lifecycleScope.launch {
-                createBackup()
+                _binding?.let { createBackup(it) }
             }
         }
-        binding.deleteBackupButton.setOnClickListener { deleteBackup() }
-        binding.restoreBackupButton.setOnClickListener { restoreBackup() }
+        binding.deleteBackupButton.setOnClickListener { _binding?.let { deleteBackup(it) } }
+        binding.restoreBackupButton.setOnClickListener { _binding?.let { restoreBackup(it) } }
     }
 
-    private suspend fun createBackup() {
+    private suspend fun createBackup(binding: FragmentSettingsBinding) {
         val dao = AppDatabase.getDatabase(requireContext()).characterDao()
         val dataToBackup = dao.getAll().first()
 
@@ -139,7 +149,7 @@ class SettingsFragment : Fragment() {
             Toast.makeText(requireContext(), "Ошибка создания резервной копии: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
-        updateBackupInfo()
+        updateBackupInfo(binding)
     }
 
     private fun getBackupFile(): File {
@@ -147,7 +157,7 @@ class SettingsFragment : Fragment() {
         return File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), fileName)
     }
 
-    private fun updateBackupInfo() {
+    private fun updateBackupInfo(binding: FragmentSettingsBinding) {
         val backupFile = getBackupFile()
         val internalBackupFile = File(requireContext().filesDir, "internal_backup.txt")
 
@@ -164,7 +174,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun deleteBackup() {
+    private fun deleteBackup(binding: FragmentSettingsBinding) {
         val backupFile = getBackupFile()
         if (backupFile.exists()) {
             try {
@@ -176,10 +186,10 @@ class SettingsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Ошибка удаления: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
-        updateBackupInfo()
+        updateBackupInfo(binding)
     }
 
-    private fun restoreBackup() {
+    private fun restoreBackup(binding: FragmentSettingsBinding) {
         val internalBackup = File(requireContext().filesDir, "internal_backup.txt")
         if (internalBackup.exists()) {
             try {
@@ -191,7 +201,7 @@ class SettingsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Ошибка восстановления: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
-        updateBackupInfo()
+        updateBackupInfo(binding)
     }
 
     private fun serializeData(data: List<Character>): String {

@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.onEach
 class CharactersFragment : Fragment() {
 
     private var _binding: FragmentCharactersBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var characterAdapter: CharacterAdapter
 
@@ -33,25 +32,28 @@ class CharactersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCharactersBinding.inflate(inflater, container, false)
+        val binding = FragmentCharactersBinding.inflate(inflater, container, false)
+        _binding = binding
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-        setupListeners()
-        observeViewModel()
+        _binding?.let { binding ->
+            setupRecyclerView(binding)
+            setupListeners(binding)
+            observeViewModel(binding)
+        }
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(binding: FragmentCharactersBinding) {
         characterAdapter = CharacterAdapter(emptyList())
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = characterAdapter
     }
 
-    private fun setupListeners() {
+    private fun setupListeners(binding: FragmentCharactersBinding) {
         // 2. Логика для "Обновить" (свайп вниз)
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshCharacters(11) // Обновляем текущую (или дефолтную) страницу
@@ -64,7 +66,7 @@ class CharactersFragment : Fragment() {
         }
     }
 
-    private fun observeViewModel() {
+    private fun observeViewModel(binding: FragmentCharactersBinding) {
         // 4. Подписываемся на Flow из ViewModel
         viewModel.characters
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
